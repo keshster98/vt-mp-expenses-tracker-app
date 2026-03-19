@@ -16,10 +16,8 @@ function BottomTabsOverview() {
         headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         headerTintColor: "white",
         headerTitleAlign: "center",
-        tabBarStyle: { backgroundCOlor: GlobalStyles.colors.primary500 },
-        tabBarActiveTintColor: {
-          backgroundColor: GlobalStyles.colors.accent500,
-        },
+        tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        tabBarActiveTintColor: GlobalStyles.colors.accent500,
       }}
     >
       <BottomTabs.Screen
