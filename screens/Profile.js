@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     elevation: 3,
   },
+
   avatarText: {
     color: "white",
     fontSize: 32,
@@ -89,20 +90,14 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#ffffff",
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
+    paddingBottom: 0,
     elevation: 3,
   },
 
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-
+  /* Rows */
   row: {
-    marginBottom: 12,
-    justifyContent: "center",
+    marginBottom: 16,
   },
 
   label: {
@@ -114,7 +109,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#111827",
-    marginTop: 2,
+    marginTop: 4,
   },
 
   empty: {

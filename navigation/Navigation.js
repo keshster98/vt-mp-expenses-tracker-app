@@ -79,10 +79,15 @@ function Navigation() {
         const storedToken = await getToken();
 
         if (storedToken) {
-          dispatch(setToken(storedToken));
-
           const user = await getCurrentUser(storedToken);
-          dispatch(setUser(user));
+
+          if (user) {
+            dispatch(setToken(storedToken));
+            dispatch(setUser(user.user));
+          } else {
+            console.log("User fetch failed: Logging out");
+            dispatch(clearToken());
+          }
         }
       } catch (error) {
         console.log("Auth load error:", error);
