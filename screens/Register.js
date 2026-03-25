@@ -6,7 +6,8 @@ import { GlobalStyles } from "../constants/styles";
 import { authToast } from "../utils/toast";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../store/redux/auth_slice";
-import { saveToken, saveUser } from "../store/expo/expo_secure_store";
+import { saveToken } from "../store/expo/expo_secure_store";
+import Loading from "./Loading";
 // import { validateEmail } from "../utils/email";
 
 function Register({ navigation }) {
@@ -16,6 +17,7 @@ function Register({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const registerHandler = async () => {
@@ -68,8 +70,19 @@ function Register({ navigation }) {
     );
 
     if (registerUser) {
+      setIsLoading(true);
+
       const token = registerUser.access_token;
       const name = registerUser.user.name;
+
+      // Save in Keychain
+      await saveToken(token);
+
+      // Save in Redux
+      dispatch(setToken(token));
+      dispatch(setUser(registerUser.user));
+
+      setIsLoading(false);
 
       authToast({
         type: "success",
@@ -77,116 +90,116 @@ function Register({ navigation }) {
         text2: "Logging you in.",
         setDisabled,
       });
-
-      // Save in Keychain
-      await saveToken(token);
-      await saveUser(registerUser.user);
-
-      // Save in Redux
-      dispatch(setToken(token));
-      dispatch(setUser(registerUser.user));
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* Page Title */}
-      <Text style={styles.title}>Register for an Account</Text>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          {/* Page Title */}
+          <Text style={styles.title}>Register for an Account</Text>
 
-      {/* Full Name Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Full Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your full name"
-          value={name}
-          onChangeText={setName}
-          autoCapitalize="words"
-        />
-      </View>
-
-      {/* Email Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-      </View>
-
-      {/* Password Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Password</Text>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={[styles.input, styles.inputPassword]}
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-          />
-
-          {/* Reveal Password Button */}
-          <Pressable
-            style={styles.eyeIcon}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            <Ionicons
-              name={showPassword ? "eye-off" : "eye"}
-              size={22}
-              color="gray"
+          {/* Full Name Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Full Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your full name"
+              value={name}
+              onChangeText={setName}
+              autoCapitalize="words"
             />
-          </Pressable>
-        </View>
-      </View>
+          </View>
 
-      {/* Confirm Password Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Confirm Password</Text>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={[styles.input, styles.inputPassword]}
-            placeholder="Confirm your password"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry={!showPassword}
-          />
-
-          {/* Reveal Password Button */}
-          <Pressable
-            style={styles.eyeIcon}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            <Ionicons
-              name={showPassword ? "eye-off" : "eye"}
-              size={22}
-              color="gray"
+          {/* Email Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
+          </View>
+
+          {/* Password Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Password</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, styles.inputPassword]}
+                placeholder="Enter your password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+              />
+
+              {/* Reveal Password Button */}
+              <Pressable
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={22}
+                  color="gray"
+                />
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Confirm Password Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Confirm Password</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, styles.inputPassword]}
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={!showPassword}
+              />
+
+              {/* Reveal Password Button */}
+              <Pressable
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={22}
+                  color="gray"
+                />
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Register Button */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              disabled && styles.buttonDisabled,
+              pressed && styles.buttonPressed,
+            ]}
+            onPress={registerHandler}
+            disabled={disabled}
+          >
+            <Text style={styles.buttonText}>Register</Text>
           </Pressable>
-        </View>
-      </View>
 
-      {/* Register Button */}
-      <Pressable
-        style={({ pressed }) => [
-          styles.button,
-          disabled && styles.buttonDisabled,
-          pressed && styles.buttonPressed,
-        ]}
-        onPress={registerHandler}
-        disabled={disabled}
-      >
-        <Text style={styles.buttonText}>Register</Text>
-      </Pressable>
-
-      {/* Link to Login */}
-      <Pressable onPress={() => navigation.replace("Login")}>
-        <Text style={styles.loginText}>Already have an account? Login </Text>
-      </Pressable>
+          {/* Link to Login */}
+          <Pressable onPress={() => navigation.replace("Login")}>
+            <Text style={styles.loginText}>
+              Already have an account? Login{" "}
+            </Text>
+          </Pressable>
+        </>
+      )}
     </View>
   );
 }

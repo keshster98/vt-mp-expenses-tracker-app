@@ -17,7 +17,13 @@ export const saveToken = async (token) => {
 export const getToken = async () => {
   try {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
-    console.log(`[Expo Secure Store] Got user token: ${token}`);
+
+    if (token) {
+      console.log(`[Expo Secure Store] Got user token: ${token}`);
+    } else {
+      console.log(`[Expo Secure Store] Got user token: null`);
+    }
+
     return token;
   } catch (error) {
     console.log("[Expo Secure Store] Error getting user token:", error);
@@ -32,41 +38,5 @@ export const deleteToken = async () => {
     console.log("[Expo Secure Store] Deleted user token");
   } catch (error) {
     console.log("[Expo Secure Store] Error deleting user token:", error);
-  }
-};
-
-// Save user data
-export const saveUser = async (user) => {
-  try {
-    await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
-    console.log("[Expo Secure Store] Saved user data");
-  } catch (error) {
-    console.log("[Expo Secure Store] Error saving user data:", error);
-  }
-};
-
-// Get user data
-export const getUser = async () => {
-  try {
-    const user = await SecureStore.getItemAsync(USER_KEY);
-    if (user) {
-      console.log("[Expo Secure Store] Got user data");
-    } else {
-      console.log("[Expo Secure Store] Got user data: null");
-    }
-    return user ? JSON.parse(user) : null;
-  } catch (error) {
-    console.log("[Expo Secure Store] Error getting user data:", error);
-    return null;
-  }
-};
-
-// Delete user data (not user account)
-export const deleteUser = async () => {
-  try {
-    await SecureStore.deleteItemAsync(USER_KEY);
-    console.log("[Expo Secure Store] Deleted user data");
-  } catch (error) {
-    console.log("[Expo Secure Store] Error deleting user data:", error);
   }
 };

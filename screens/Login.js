@@ -6,7 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { authToast } from "../utils/toast";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../store/redux/auth_slice";
-import { saveToken, saveUser } from "../store/expo/expo_secure_store";
+import { saveToken } from "../store/expo/expo_secure_store";
+import Loading from "./Loading";
 // import { validateEmail } from "../utils/email";
 
 function Login({ navigation }) {
@@ -14,6 +15,7 @@ function Login({ navigation }) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const loginHandler = async () => {
@@ -45,22 +47,25 @@ function Login({ navigation }) {
     const verifyUser = await login(trimmedEmail, password);
 
     if (verifyUser) {
+      setIsLoading(true);
+
       const token = verifyUser.access_token;
       const name = verifyUser.user.name;
+
+      // Save in Keychain
+      await saveToken(token);
+
+      // Save in Redux
+      dispatch(setToken(token));
+      dispatch(setUser(verifyUser.user));
+
+      setIsLoading(false);
 
       authToast({
         type: "success",
         text1: `Welcome, ${name}!`,
         setDisabled,
       });
-
-      // Save in Keychain
-      await saveToken(token);
-      await saveUser(verifyUser.user);
-
-      // Save in Redux
-      dispatch(setToken(token));
-      dispatch(setUser(verifyUser.user));
     }
 
     /*
@@ -79,65 +84,73 @@ function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Page Title */}
-      <Text style={styles.title}>Login to your Account</Text>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          {/* Page Title */}
+          <Text style={styles.title}>Login to your Account</Text>
 
-      {/* Email Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-      </View>
-
-      {/* Password Input */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Password</Text>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={[styles.input, styles.inputPassword]}
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-          />
-
-          {/* Reveal Password Button */}
-          <Pressable
-            style={styles.eyeIcon}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            <Ionicons
-              name={showPassword ? "eye-off" : "eye"}
-              size={22}
-              color="gray"
+          {/* Email Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
+          </View>
+
+          {/* Password Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Password</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, styles.inputPassword]}
+                placeholder="Enter your password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+              />
+
+              {/* Reveal Password Button */}
+              <Pressable
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={22}
+                  color="gray"
+                />
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Login Button  */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              disabled && styles.buttonDisabled,
+              pressed && styles.buttonPressed,
+            ]}
+            onPress={loginHandler}
+            disabled={disabled}
+          >
+            <Text style={styles.buttonText}>Log In</Text>
           </Pressable>
-        </View>
-      </View>
 
-      {/* Login Button  */}
-      <Pressable
-        style={({ pressed }) => [
-          styles.button,
-          disabled && styles.buttonDisabled,
-          pressed && styles.buttonPressed,
-        ]}
-        onPress={loginHandler}
-        disabled={disabled}
-      >
-        <Text style={styles.buttonText}>Log In</Text>
-      </Pressable>
-
-      {/* Link to Register Page  */}
-      <Pressable onPress={() => navigation.replace("Register")}>
-        <Text style={styles.loginText}>Don't have an account? Register </Text>
-      </Pressable>
+          {/* Link to Register Page  */}
+          <Pressable onPress={() => navigation.replace("Register")}>
+            <Text style={styles.loginText}>
+              Don't have an account? Register{" "}
+            </Text>
+          </Pressable>
+        </>
+      )}
     </View>
   );
 }

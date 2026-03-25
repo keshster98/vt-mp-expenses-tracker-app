@@ -72,11 +72,27 @@ export const login = async (email, password) => {
   }
 };
 
+// Get current user
+export const getCurrentUser = async (token) => {
+  try {
+    const response = await axios.get(API_URL + "/user", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log("Getting user error:", error.reponse.data.message);
+    return null;
+  }
+};
+
 // Logout
 export const logout = async (token) => {
   try {
     const response = await axios.post(
-      API_URL + "/login",
+      API_URL + "/logout",
       {},
       {
         headers: {
@@ -88,7 +104,7 @@ export const logout = async (token) => {
   } catch (error) {
     Toast.show({
       type: "error",
-      text1: error.response.data.error,
+      text1: error.response.data.message,
       position: "top",
       topOffset: 105,
     });

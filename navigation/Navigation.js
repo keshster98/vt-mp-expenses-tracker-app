@@ -11,9 +11,10 @@ import { GlobalStyles } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { getToken, getUser } from "../store/expo/expo_secure_store";
+import { getToken } from "../store/expo/expo_secure_store";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../store/redux/auth_slice";
+import { getCurrentUser } from "../utils/api_auth";
 
 const BottomTabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -76,14 +77,12 @@ function Navigation() {
     const loadAuth = async () => {
       try {
         const storedToken = await getToken();
-        const storedUser = await getUser();
 
         if (storedToken) {
           dispatch(setToken(storedToken));
-        }
 
-        if (storedUser) {
-          dispatch(setUser(storedUser));
+          const user = await getCurrentUser(storedToken);
+          dispatch(setUser(user));
         }
       } catch (error) {
         console.log("Auth load error:", error);

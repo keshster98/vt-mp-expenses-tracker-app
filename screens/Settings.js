@@ -2,15 +2,19 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../store/redux/auth_slice";
-import { deleteToken, deleteUser } from "../store/expo/expo_secure_store";
+import { deleteToken } from "../store/expo/expo_secure_store";
 import { logoutToast } from "../utils/toast";
+import { logout } from "../utils/api_auth";
 
 function Settings() {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
   const name = user?.name || "User";
 
   const logoutHandler = async () => {
+    await logout(token);
+
     logoutToast({
       type: "success",
       text1: `Goodbye, ${name}!`,
@@ -18,7 +22,6 @@ function Settings() {
 
     // Remove from Keychain
     await deleteToken();
-    await deleteUser();
 
     // Remove from Redux
     dispatch(clearToken());
