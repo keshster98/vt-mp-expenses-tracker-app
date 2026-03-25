@@ -35,7 +35,8 @@ export const register = async (
     Toast.show({
       type: "error",
       text1: message,
-      position: "bottom",
+      position: "top",
+      topOffset: 105,
     });
   }
 };
@@ -65,7 +66,8 @@ export const login = async (email, password) => {
     Toast.show({
       type: "error",
       text1: message,
-      position: "bottom",
+      position: "top",
+      topOffset: 105,
     });
   }
 };
@@ -87,7 +89,8 @@ export const logout = async (token) => {
     Toast.show({
       type: "error",
       text1: error.response.data.error,
-      position: "bottom",
+      position: "top",
+      topOffset: 105,
     });
   }
 };

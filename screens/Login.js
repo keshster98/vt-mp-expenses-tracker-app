@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { authToast } from "../utils/toast";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../store/redux/auth_slice";
-import { saveToken } from "../utils/keychain";
+import { saveToken, saveUser } from "../store/expo/expo_secure_store";
 // import { validateEmail } from "../utils/email";
 
 function Login({ navigation }) {
@@ -56,12 +56,11 @@ function Login({ navigation }) {
 
       // Save in Keychain
       await saveToken(token);
+      await saveUser(verifyUser.user);
 
       // Save in Redux
       dispatch(setToken(token));
       dispatch(setUser(verifyUser.user));
-
-      navigation.replace("Main");
     }
 
     /*

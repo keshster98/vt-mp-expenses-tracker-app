@@ -6,7 +6,7 @@ import { GlobalStyles } from "../constants/styles";
 import { authToast } from "../utils/toast";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../store/redux/auth_slice";
-import { saveToken } from "../utils/keychain";
+import { saveToken, saveUser } from "../store/expo/expo_secure_store";
 // import { validateEmail } from "../utils/email";
 
 function Register({ navigation }) {
@@ -69,21 +69,22 @@ function Register({ navigation }) {
 
     if (registerUser) {
       const token = registerUser.access_token;
+      const name = registerUser.user.name;
+
+      authToast({
+        type: "success",
+        text1: `Successfully registered, ${name}!`,
+        text2: "Logging you in.",
+        setDisabled,
+      });
 
       // Save in Keychain
       await saveToken(token);
+      await saveUser(registerUser.user);
 
       // Save in Redux
       dispatch(setToken(token));
       dispatch(setUser(registerUser.user));
-
-      authToast({
-        type: "success",
-        text1: `Successfully registered, ${registerUser.user.name}!`,
-        text2: "Logging you in.",
-        setDisabled,
-      });
-      navigation.replace("Main");
     }
   };
 

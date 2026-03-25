@@ -1,9 +1,8 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../store/redux/auth_slice";
-import { deleteToken } from "../utils/keychain";
+import { deleteToken, deleteUser } from "../store/expo/expo_secure_store";
 import { logoutToast } from "../utils/toast";
 
 function Settings() {
@@ -19,6 +18,8 @@ function Settings() {
 
     // Remove from Keychain
     await deleteToken();
+    await deleteUser();
+
     // Remove from Redux
     dispatch(clearToken());
   };

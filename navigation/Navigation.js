@@ -6,9 +6,14 @@ import Profile from "../screens/Profile";
 import Settings from "../screens/Settings";
 import Login from "../screens/Login";
 import Register from "../screens/Register";
+import Loading from "../screens/Loading";
 import { GlobalStyles } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { getToken, getUser } from "../store/expo/expo_secure_store";
+import { useDispatch } from "react-redux";
+import { setToken, setUser } from "../store/redux/auth_slice";
 
 const BottomTabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -63,7 +68,36 @@ function BottomTabsOverview() {
 }
 
 function Navigation() {
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadAuth = async () => {
+      try {
+        const storedToken = await getToken();
+        const storedUser = await getUser();
+
+        if (storedToken) {
+          dispatch(setToken(storedToken));
+        }
+
+        if (storedUser) {
+          dispatch(setUser(storedUser));
+        }
+      } catch (error) {
+        console.log("Auth load error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAuth();
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <NavigationContainer>

@@ -9,7 +9,7 @@ export const authToast = ({ type, text1, text2, setDisabled }) => {
     text1,
     ...(text2 && { text2 }),
     position: "top",
-    topOffset: 120,
+    topOffset: 105,
     onHide: () => setDisabled(false),
   });
 };
@@ -21,6 +21,6 @@ export const logoutToast = ({ type, text1, text2 }) => {
     text1,
     ...(text2 && { text2 }),
     position: "top",
-    topOffset: 120,
+    topOffset: 105,
   });
 };
