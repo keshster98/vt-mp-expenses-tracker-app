@@ -1,12 +1,17 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import Home from "../screens/Home";
 import Profile from "../screens/Profile";
 import Settings from "../screens/Settings";
+import Login from "../screens/Login";
+import Register from "../screens/Register";
 import { GlobalStyles } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 
 const BottomTabs = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 function BottomTabsOverview() {
   return (
@@ -58,9 +63,44 @@ function BottomTabsOverview() {
 }
 
 function Navigation() {
+  const token = useSelector((state) => state.auth.token);
+
   return (
     <NavigationContainer>
-      <BottomTabsOverview />
+      <Stack.Navigator
+        screenOptions={{
+          headerTitle: "Expense Tracker App",
+          headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+          headerTintColor: "white",
+          headerTitleAlign: "center",
+          headerMode: "float",
+        }}
+      >
+        {!token ? (
+          <>
+            {/* Auth Screens */}
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ animation: "slide_from_left" }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{ animation: "slide_from_right" }}
+            />
+          </>
+        ) : (
+          <>
+            {/* Main App */}
+            <Stack.Screen
+              name="Main"
+              component={BottomTabsOverview}
+              options={{ headerShown: false }}
+            />
+          </>
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

@@ -8,8 +8,6 @@ function Home() {
   );
 }
 
-export default Home;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -21,3 +19,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+export default Home;
