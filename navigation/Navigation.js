@@ -7,6 +7,7 @@ import Settings from "../screens/Settings";
 import Login from "../screens/Login";
 import Register from "../screens/Register";
 import Loading from "../screens/Loading";
+import Maps from "../screens/Maps";
 import { GlobalStyles } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -39,6 +40,17 @@ function BottomTabsOverview() {
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <BottomTabs.Screen
+        name="Maps"
+        component={Maps}
+        options={{
+          title: "Maps",
+          tabBarLabel: "Maps",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="earth" size={size} color={color} />
           ),
         }}
       />
