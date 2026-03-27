@@ -83,8 +83,12 @@ export const getCurrentUser = async (token) => {
 
     return response.data;
   } catch (error) {
-    console.log("Getting user error:", error.reponse.data.message);
-    return null;
+    Toast.show({
+      type: "error",
+      text1: `Getting user error: ${error.response.data.message}`,
+      position: "top",
+      topOffset: 105,
+    });
   }
 };
 

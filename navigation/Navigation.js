@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getToken } from "../store/expo/expo_secure_store";
 import { useDispatch } from "react-redux";
-import { setToken, setUser } from "../store/redux/auth_slice";
+import { setToken, setUser, clearToken } from "../store/redux/auth_slice";
 import { getCurrentUser } from "../utils/api_auth";
 
 const BottomTabs = createBottomTabNavigator();
@@ -85,7 +85,7 @@ function Navigation() {
             dispatch(setToken(storedToken));
             dispatch(setUser(user.user));
           } else {
-            console.log("User fetch failed: Logging out");
+            // Logout user if token and user cannot be retrieved on dispatch
             dispatch(clearToken());
           }
         }
