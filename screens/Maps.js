@@ -17,7 +17,6 @@ function Maps() {
   const [activePlace, setActivePlace] = useState(null);
   // GPS on or off
   const [gpsEnabled, setGpsEnabled] = useState(null);
-  // The Google Maps GPS prompt status
   const [modalVisible, setModalVisible] = useState(false);
   const [locationError, setLocationError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

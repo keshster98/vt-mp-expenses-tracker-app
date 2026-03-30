@@ -35,6 +35,15 @@ export default {
       favicon: "./assets/favicon.png",
     },
 
-    plugins: ["expo-secure-store"],
+    plugins: [
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          recordAudioAndroid: true,
+          barcodeScannerEnabled: true,
+        },
+      ],
+    ],
   },
 };

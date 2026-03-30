@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import dayjs from "dayjs";
+import { FlatList } from "react-native";
 
 function Home({ navigation }) {
   const token = useSelector((state) => state.auth.token);
@@ -169,48 +170,50 @@ function Home({ navigation }) {
       </Text>
 
       {/* List of Expenses */}
-      {expenses.map((item) => (
-        <Pressable
-          key={item.id}
-          style={styles.card}
-          onPress={() => {
-            setIsEditing(true);
-            setSelectedExpenseId(item.id);
+      <FlatList
+        data={expenses}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        renderItem={({ item }) => (
+          <Pressable
+            style={styles.card}
+            onPress={() => {
+              setIsEditing(true);
+              setSelectedExpenseId(item.id);
 
-            if (isEditing && selectedExpenseId != null) {
               setTitle(item.title);
               setAmount(item.amount.toString());
               setCategory(item.category || "Food");
               setDate(dayjs(item.date));
               setDescription(item.description || "");
               setModalVisible(true);
-            }
-          }}
-        >
-          <View>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.date}>
-              {dayjs(item.date).format("DD MMM YYYY")}
-            </Text>
-          </View>
+            }}
+          >
+            <View>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.date}>
+                {dayjs(item.date).format("DD MMM YYYY")}
+              </Text>
+            </View>
 
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.amount}>
-              RM {Number(item.amount).toFixed(2)}
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.amount}>
+                RM {Number(item.amount).toFixed(2)}
+              </Text>
 
-            <Pressable
-              onPress={() => {
-                setSelectedExpenseId(item.id);
-                setDeleteModalVisible(true);
-              }}
-              style={{ marginLeft: 10 }}
-            >
-              <Ionicons name="trash" size={20} color="red" />
-            </Pressable>
-          </View>
-        </Pressable>
-      ))}
+              <Pressable
+                onPress={() => {
+                  setSelectedExpenseId(item.id);
+                  setDeleteModalVisible(true);
+                }}
+                style={{ marginLeft: 10 }}
+              >
+                <Ionicons name="trash" size={20} color="red" />
+              </Pressable>
+            </View>
+          </Pressable>
+        )}
+      />
 
       {/* Add Modal */}
       <Modal visible={modalVisible} transparent animationType="fade">

@@ -16,6 +16,7 @@ import { getToken } from "../store/expo/expo_secure_store";
 import { useDispatch } from "react-redux";
 import { setToken, setUser, clearToken } from "../store/redux/auth_slice";
 import { getCurrentUser } from "../utils/api_auth";
+import Cam from "../screens/Cam";
 
 const BottomTabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -40,6 +41,17 @@ function BottomTabsOverview() {
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <BottomTabs.Screen
+        name="Camera"
+        component={Cam}
+        options={{
+          title: "Cmaera",
+          tabBarLabel: "Camera",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="camera" size={size} color={color} />
           ),
         }}
       />
