@@ -6,6 +6,11 @@ export default {
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
+    extra: {
+      eas: {
+        projectId: "70ddc82c-9ecc-4ab0-b2fd-0bc76fdb501a",
+      },
+    },
 
     splash: {
       image: "./assets/splash-icon.png",
@@ -18,6 +23,7 @@ export default {
     },
 
     android: {
+      package: "com.keshter98.mini_project_expenses_tracker",
       adaptiveIcon: {
         backgroundColor: "#E6F4FE",
         foregroundImage: "./assets/android-icon-foreground.png",
@@ -42,6 +48,14 @@ export default {
         {
           recordAudioAndroid: true,
           barcodeScannerEnabled: true,
+        },
+      ],
+      ["@react-native-community/datetimepicker"],
+      ["expo-font"],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          iosUrlScheme: process.env.EXPO_PUBLIC_GOOGLE_AUTH_IOS_URL_SCHEME,
         },
       ],
     ],
